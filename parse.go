@@ -15,7 +15,7 @@ type node struct {
 func (n node) String() string {
 	out := fmt.Sprintf("%s\n", n.element.name)
 	for _, n := range n.children {
-		out = fmt.Sprintf("%s\n->%s", out, *n)
+		out = fmt.Sprintf("%s\n-->%s", out, *n)
 	}
 	return out
 }
@@ -43,8 +43,9 @@ func parseInput(r io.Reader) node {
 			path = []*node{&n}
 			root = &n
 		case lastNode.element.indent == le.indent:
-			parent := path[indentLevel]
+			parent := path[indentLevel-1]
 			parent.children = append(parent.children, &n)
+			path[indentLevel] = &n
 		case strings.HasPrefix(le.indent, lastNode.element.indent):
 			// one level deeper
 			parent := path[indentLevel]
@@ -63,8 +64,8 @@ func parseInput(r io.Reader) node {
 					break
 				}
 			}
-
 		}
+		fmt.Println(indentLevel, n.element.name)
 		lastNode = n
 	}
 	return *root
