@@ -65,7 +65,6 @@ func parseInput(r io.Reader) node {
 				}
 			}
 		}
-		fmt.Println(indentLevel, n.element.name)
 		lastNode = n
 	}
 	return *root
