@@ -98,6 +98,7 @@ const simpleTreeIn2 = `folder
 		file 1
 	folder2
 		file 21
+		file 22
 		folder21
 			file 211
 	file 3`
@@ -119,15 +120,18 @@ var simpleTree2Node = node{
 			[]*node{
 				&node{
 					lineElement{"", "file 21"},
+					[]*node{},
+				},
+				&node{
+					lineElement{"", "file 22"},
+					[]*node{},
+				},
+				&node{
+					lineElement{"", "folder21"},
 					[]*node{
 						&node{
-							lineElement{"", "folder21"},
-							[]*node{
-								&node{
-									lineElement{"", "file 211"},
-									nil,
-								},
-							},
+							lineElement{"", "file 211"},
+							[]*node{},
 						},
 					},
 				},
@@ -135,7 +139,7 @@ var simpleTree2Node = node{
 		},
 		&node{
 			lineElement{"", "file 3"},
-			nil,
+			[]*node{},
 		},
 	},
 }
