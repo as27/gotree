@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"io"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -50,6 +51,27 @@ func Test_convert(t *testing.T) {
 			}
 			if gotW := w.String(); gotW != tt.wantW {
 				t.Errorf("convert() = \n%v, want \n%v,", gotW, tt.wantW)
+			}
+		})
+	}
+}
+
+func Test_readLines(t *testing.T) {
+	tests := []struct {
+		name string
+		r    io.Reader
+		want []string
+	}{
+		{
+			"multiple lines",
+			strings.NewReader("abc\ndef\nghij\n"),
+			[]string{"abc", "def", "ghij"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := readLines(tt.r); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("readLines() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -18,9 +18,10 @@ type box struct {
 }
 
 type drawOptions struct {
-	padding   box
-	width     int
+	padding   box // absolute padding of the image
+	width     int // width of the image
 	ttype     truetype.Options
+	tpad      int // padding for the line height
 	fontColor color.NRGBA
 }
 
@@ -30,10 +31,11 @@ func drawText(w io.Writer, lines []string, opt *drawOptions) error {
 			padding:   box{top: 50, bottom: 50, left: 20},
 			width:     2000,
 			ttype:     truetype.Options{Size: 12, DPI: 300},
-			fontColor: color.NRGBA{50, 50, 50, 255},
+			tpad:      10,
+			fontColor: color.NRGBA{0, 0, 0, 255},
 		}
 	}
-	lineHeight := calcLineHeight(opt.ttype)
+	lineHeight := calcLineHeight(opt.ttype) + opt.tpad
 	imgHeight := lineHeight*len(lines) + opt.padding.top + opt.padding.bottom
 	img := image.NewNRGBA(image.Rect(0, 0, opt.width, imgHeight))
 	py := lineHeight + opt.padding.top
