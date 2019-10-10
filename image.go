@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/draw"
 	"image/png"
 	"io"
 
@@ -29,7 +30,7 @@ func drawText(w io.Writer, lines []string, opt *drawOptions) error {
 	if opt == nil {
 		opt = &drawOptions{
 			padding:   box{top: 50, bottom: 50, left: 20},
-			width:     2000,
+			width:     *flagImgWidth,
 			ttype:     truetype.Options{Size: 12, DPI: 300},
 			tpad:      10,
 			fontColor: color.NRGBA{0, 0, 0, 255},
@@ -37,7 +38,9 @@ func drawText(w io.Writer, lines []string, opt *drawOptions) error {
 	}
 	lineHeight := calcLineHeight(opt.ttype) + opt.tpad
 	imgHeight := lineHeight*len(lines) + opt.padding.top + opt.padding.bottom
-	img := image.NewNRGBA(image.Rect(0, 0, opt.width, imgHeight))
+	rect := image.Rect(0, 0, opt.width, imgHeight)
+	img := image.NewNRGBA(rect)
+	draw.Draw(img, rect, image.White, image.ZP, draw.Src)
 	py := lineHeight + opt.padding.top
 	for _, l := range lines {
 		addText(img, opt.padding.left, py, l, *opt)
