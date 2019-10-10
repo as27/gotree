@@ -10,11 +10,12 @@ import (
 	"strings"
 )
 
-const version = "1.0.1"
+const version = "1.0.3"
 
 var (
-	flagImg     = flag.String("img", "", "Filename for an output image (png).")
-	flagVersion = flag.Bool("v", false, "prints out the version")
+	flagImg      = flag.String("img", "", "filename for an output image (png).")
+	flagImgWidth = flag.Int("imgw", 1700, "defines the width, im img is set.")
+	flagVersion  = flag.Bool("v", false, "prints out the version")
 )
 
 func main() {
