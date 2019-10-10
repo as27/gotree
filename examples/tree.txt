@@ -1,0 +1,11 @@
+root folder
+    image
+        image.go
+        image_test.go
+    zfolder
+        zfile1
+        zfile2
+    converter.go
+    converter_test.go
+    go.mod
+    main.go
