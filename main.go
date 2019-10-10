@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -8,15 +10,26 @@ import (
 	"strings"
 )
 
-var output io.Writer = os.Stdout
+const version = "1.0.1"
+
+var (
+	flagImg     = flag.String("img", "", "Filename for an output image (png).")
+	flagVersion = flag.Bool("v", false, "prints out the version")
+)
 
 func main() {
 	flag.Parse()
+	var output io.Writer = os.Stdout
+	if *flagVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 	args := flag.Args()
 	if len(args) < 1 {
 		fmt.Println("a txt file is expexted as input")
 		os.Exit(2)
 	}
+
 	inFileName := args[0]
 	inReader, err := os.Open(inFileName)
 	if err != nil {
@@ -24,16 +37,40 @@ func main() {
 		os.Exit(1)
 	}
 	defer inReader.Close()
-	err = convert(inReader, output)
-	if err != nil {
-		fmt.Printf("error converting: %s", err)
+
+	switch {
+	case *flagImg != "":
+		buf := &bytes.Buffer{}
+		err = convert(inReader, buf)
+		f, err := os.OpenFile(*flagImg, os.O_CREATE, 0666)
+		defer f.Close()
+		if err != nil {
+			fmt.Println("cannot create img file: ", err)
+			os.Exit(1)
+		}
+		drawText(f, readLines(buf), nil)
+	default:
+		err = convert(inReader, output)
+		if err != nil {
+			fmt.Printf("error converting: %s", err)
+		}
 	}
+
 }
 
 func convert(r io.Reader, w io.Writer) error {
 	root := parseInput(r)
 	walkTree(w, root, nil, true)
 	return nil
+}
+
+func readLines(r io.Reader) []string {
+	var lines []string
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines
 }
 
 func walkTree(w io.Writer, n node, indent []string, lastNode bool) {
